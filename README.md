@@ -69,44 +69,52 @@ To manage storage costs and data privacy, it is highly recommended to set up aut
 
 By following these steps, you can connect this fully-featured frontend to a robust and scalable Firebase backend with automated data management.
 
-## Deployment Instructions (Firebase App Hosting)
+## Deployment Instructions (Self-Hosted VPS)
 
-This Next.js application is configured to be deployed with **Firebase App Hosting**. Follow these steps to get your application live.
+This Next.js application is ready to be deployed on your own Virtual Private Server (VPS). Here are the general steps to get your application live.
 
 ### Prerequisites
 
-*   You have a Firebase account.
-*   You have Node.js and `npm` installed on your local machine.
+*   You have a VPS with Node.js and `npm` (or a similar package manager like `yarn` or `pnpm`) installed.
+*   You have configured your domain's DNS to point to your VPS IP address.
+*   You have a reverse proxy like Nginx or Apache set up to forward requests to the Node.js application port (typically port 3000).
+*   You have an SSL certificate installed (e.g., via Let's Encrypt) for HTTPS.
 
 ### Steps
 
-1.  **Install the Firebase CLI:**
-    If you don't have it installed, open your terminal and run:
+1.  **Clone Your Project:**
+    Transfer your project files to your VPS, for example using `git clone`.
+
+2.  **Install Dependencies:**
+    Navigate to your project's root directory in your VPS terminal and install the necessary packages:
     ```bash
-    npm install -g firebase-tools
+    npm install
     ```
 
-2.  **Log in to Firebase:**
-    In your terminal, log in to your Firebase account:
+3.  **Build the Application for Production:**
+    This command compiles and optimizes your Next.js application for the best performance.
     ```bash
-    firebase login
-    ```
-    This will open a browser window for you to authenticate.
-
-3.  **Connect to a Firebase Project:**
-    Navigate to your project's root directory in the terminal. If this is your first time deploying, you'll need to associate your local project with a Firebase project. Run:
-    ```bash
-    firebase init apphosting
-    ```
-    The CLI will guide you through the process:
-    *   You can select an **existing Firebase project** or **create a new one**.
-    *   When asked for the location of your web app's entry point, confirm the default (`.`).
-    *   The CLI will detect that this is a Next.js application and set everything up for you.
-
-4.  **Deploy Your Application:**
-    Once the initialization is complete, you can deploy your application. Simply run the following command from your project's root directory:
-    ```bash
-    firebase deploy
+    npm run build
     ```
 
-After the deployment process finishes, the Firebase CLI will provide you with the URL where your application is live. That's it! Your application is now deployed on Firebase App Hosting.
+4.  **Start the Production Server:**
+    To run the application, use the `start` command.
+    ```bash
+    npm run start
+    ```
+    By default, this will start the server on port 3000.
+
+5.  **Keep the Application Running (Recommended):**
+    To ensure your application stays online even if it crashes or the server reboots, it is highly recommended to use a process manager like `pm2`.
+
+    *   Install `pm2` globally:
+        ```bash
+        npm install pm2 -g
+        ```
+    *   Start your application with `pm2`:
+        ```bash
+        pm2 start npm --name "your-app-name" -- start
+        ```
+    *   You can then use commands like `pm2 list`, `pm2 logs`, and `pm2 restart` to manage your application.
+
+After these steps, your application should be live and accessible at your domain.
