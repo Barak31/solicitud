@@ -21,6 +21,7 @@ export async function submitApplication(values: FullApplication) {
     const tenantSchema = generateApplicationSchema(t, tenant.clientType);
     const validatedTenant = tenantSchema.safeParse(tenant);
     if (!validatedTenant.success) {
+      console.error("Tenant validation failed:", validatedTenant.error.issues);
       return { error: "Invalid tenant fields!", issues: validatedTenant.error.issues };
     }
   }
@@ -29,6 +30,7 @@ export async function submitApplication(values: FullApplication) {
   const guarantorSchema = generateApplicationSchema(t, values.guarantor.clientType);
   const validatedGuarantor = guarantorSchema.safeParse(values.guarantor);
   if (!validatedGuarantor.success) {
+    console.error("Guarantor validation failed:", validatedGuarantor.error.issues);
     return { error: "Invalid guarantor fields!", issues: validatedGuarantor.error.issues };
   }
   
@@ -74,5 +76,3 @@ export async function submitApplication(values: FullApplication) {
   // Simulate a successful submission
   return { success: "¡Solicitud completa enviada con éxito!", data };
 }
-
-    
