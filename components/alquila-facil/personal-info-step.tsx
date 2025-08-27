@@ -23,6 +23,7 @@ export function PersonalInfoStep({ form, fieldPrefix }: Props) {
   const { language, dictionary } = useLanguage();
   const t = dictionary.personalInfo;
   const locale = language === 'es' ? es : enUS;
+  const currentYear = new Date().getFullYear();
 
   return (
     <Form {...form}>
@@ -96,6 +97,9 @@ export function PersonalInfoStep({ form, fieldPrefix }: Props) {
                   <PopoverContent className="w-auto p-0" align="start">
                     <Calendar
                       mode="single"
+                      captionLayout="dropdown-buttons"
+                      fromYear={1950}
+                      toYear={currentYear}
                       selected={field.value}
                       onSelect={field.onChange}
                       disabled={(date) =>
@@ -115,5 +119,3 @@ export function PersonalInfoStep({ form, fieldPrefix }: Props) {
     </Form>
   );
 }
-
-    
