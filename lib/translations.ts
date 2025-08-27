@@ -188,6 +188,7 @@ export const translations = {
         signerName: { min: "El nombre del firmante es obligatorio." },
         signerRole: { min: "El cargo del firmante es obligatorio." },
         signerId: { min: "La cédula o pasaporte es obligatoria." },
+        file: { required: "Debe seleccionar un archivo." }
     }
   },
   en: {
@@ -310,7 +311,7 @@ export const translations = {
         companyName: 'Company Name',
         companyRNC: 'RNC',
         companyAddress: 'Company Address',
-        companyActivity: 'Business Activity',
+        businessActivity: 'Business Activity',
         signerName: 'Name of the person who will sign',
         signerRole: 'Position / Role',
         signerId: 'ID or Passport No.',
@@ -378,6 +379,7 @@ export const translations = {
         signerName: { min: "Signer name is required." },
         signerRole: { min: "Signer role is required." },
         signerId: { min: "Signer ID or passport is required." },
+        file: { required: "You must select a file." }
     }
   },
 };
