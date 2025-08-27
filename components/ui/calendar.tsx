@@ -29,7 +29,7 @@ function Calendar({
         caption: "flex justify-center pt-1 relative items-center",
         caption_label: "text-sm font-medium hidden",
         caption_dropdowns: "flex gap-2",
-        dropdown: "px-2 py-1 border rounded-md text-sm cursor-pointer",
+        dropdown: "px-2 py-1 border rounded-md text-sm cursor-pointer bg-card text-card-foreground",
         dropdown_month: "",
         dropdown_year: "",
         nav: "space-x-1 flex items-center",
@@ -72,4 +72,5 @@ function Calendar({
 Calendar.displayName = "Calendar"
 
 export { Calendar }
+
 
