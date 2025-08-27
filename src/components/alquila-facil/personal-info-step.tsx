@@ -102,6 +102,11 @@ export function PersonalInfoStep({ form, fieldPrefix }: Props) {
                         date > new Date() || date < new Date("1900-01-01")
                       }
                       initialFocus
+			// --- ¡CAMBIOS AQUÍ! ---
+                  captionLayout="dropdown-buttons" // <-- Activa los selectores de mes y año
+                  fromYear={1940}                   // <-- Define el año de inicio para el selector
+                  toYear={new Date().getFullYear()} // <-- Define el año de fin (el actual)
+                  // --- FIN DE LOS CAMBIOS ---
                       locale={locale}
                     />
                   </PopoverContent>
