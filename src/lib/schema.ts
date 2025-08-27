@@ -9,6 +9,8 @@ const agentSchema = (t: (typeof translations)['es']) => z.object({
   email: z.string().email(),
 });
 
+const fileSchema = (t: (typeof translations)['es']) => z.instanceof(File, { message: t.validation.file.required }).refine(file => file.size > 0, t.validation.file.required);
+
 const individualSchemaBase = (t: (typeof translations)['es']) => z.object({
     clientType: z.literal('individual'),
     // Personal Information
@@ -31,12 +33,12 @@ const individualSchemaBase = (t: (typeof translations)['es']) => z.object({
     }),
     employer: z.string().min(1, { message: t.validation.employer.min }),
     jobTitle: z.string().min(1, { message: t.validation.jobTitle.min }),
-    monthlyIncome: z.coerce.number().min(0, { message: t.validation.monthlyIncome.min }),
+    monthlyIncome: z.coerce.number().min(1, { message: t.validation.monthlyIncome.min }),
     // Documents
-    workLetter: z.any().optional(),
-    bankStatements: z.any().optional(),
-    identityCard: z.any().optional(),
-    datacredito: z.any().optional(),
+    workLetter: fileSchema(t),
+    bankStatements: fileSchema(t),
+    identityCard: fileSchema(t),
+    datacredito: fileSchema(t),
 });
 
 const companySchemaBase = (t: (typeof translations)['es']) => z.object({
@@ -53,24 +55,21 @@ const companySchemaBase = (t: (typeof translations)['es']) => z.object({
     signerRole: z.string().min(1, { message: t.validation.signerRole.min }),
     signerId: z.string().min(1, { message: t.validation.signerId.min }),
     // Company Documents
-    mercantileRegistry: z.any().optional(),
-    representativeId: z.any().optional(),
-    assemblyAct: z.any().optional(),
-    bankStatements: z.any().optional(),
-    datacredito: z.any().optional(),
+    mercantileRegistry: fileSchema(t),
+    representativeId: fileSchema(t),
+    assemblyAct: fileSchema(t),
+    bankStatements: fileSchema(t),
+    datacredito: fileSchema(t),
 });
 
 export const generateApplicationSchema = (t: (typeof translations)['es'], clientType: ClientType) => {
-    if (clientType === 'individual') {
-        return individualSchemaBase(t);
-    }
-    return companySchemaBase(t);
+    return clientType === 'individual' ? individualSchemaBase(t) : companySchemaBase(t);
 };
 
 export const generateTenantSchema = (t: (typeof translations)['es'], clientType: ClientType, numberOfTenants: number) => {
-    const baseSchema = clientType === 'individual' ? individualSchemaBase(t) : companySchemaBase(t);
+    const baseSchema = generateApplicationSchema(t, clientType);
     return z.object({
-        tenants: z.array(baseSchema).length(numberOfTenants)
+        tenants: z.array(baseSchema).length(numberOfTenants, { message: `Deben haber exactamente ${numberOfTenants} inquilinos.`})
     });
 }
 

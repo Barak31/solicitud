@@ -51,7 +51,7 @@ export function EmploymentInfoStep({ form, fieldPrefix }: Props) {
                 <FormControl>
                     <div className="relative">
                         <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-muted-foreground">$</span>
-                        <Input type="number" placeholder="3000" className="pl-7" {...field} suppressHydrationWarning />
+                        <Input type="number" placeholder="3000" className="pl-7" {...field} />
                     </div>
                 </FormControl>
                 <FormMessage />
@@ -65,7 +65,7 @@ export function EmploymentInfoStep({ form, fieldPrefix }: Props) {
               <FormItem>
                 <FormLabel>{t.employer}</FormLabel>
                 <FormControl>
-                  <Input placeholder="ACME Corporation" {...field} suppressHydrationWarning />
+                  <Input placeholder="ACME Corporation" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -78,7 +78,7 @@ export function EmploymentInfoStep({ form, fieldPrefix }: Props) {
               <FormItem>
                 <FormLabel>{t.jobTitle}</FormLabel>
                 <FormControl>
-                  <Input placeholder="Software Engineer" {...field} suppressHydrationWarning />
+                  <Input placeholder="Software Engineer" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -89,3 +89,5 @@ export function EmploymentInfoStep({ form, fieldPrefix }: Props) {
     </Form>
   );
 }
+
+    

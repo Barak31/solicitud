@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { useForm, useFieldArray } from "react-hook-form";
+import { useForm, useFieldArray, type FieldPath } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { generateApplicationSchema, generateTenantSchema, type ApplicationData, type ClientType } from "@/lib/schema";
 import { useLanguage } from "@/context/language-context";
@@ -31,47 +31,62 @@ export function MultiStepForm({ clientType, onFormSubmit, formRole, title, appli
   const [currentStep, setCurrentStep] = useState(0);
   const { dictionary } = useLanguage();
 
-  const steps = useMemo(() => {
-    const individualSteps = [
-      { id: dictionary.stepper.step1.id, name: dictionary.stepper.step1.name },
-      { id: dictionary.stepper.step2.id, name: dictionary.stepper.step2.name },
-      { id: dictionary.stepper.step3.id, name: dictionary.stepper.step3.name },
-      { id: dictionary.stepper.step4.id, name: dictionary.stepper.step4.name },
-    ];
+  const individualSteps = useMemo(() => [
+      { id: dictionary.stepper.step1.id, name: dictionary.stepper.step1.name, fields: ['fullName', 'email', 'phone', 'dob'] },
+      { id: dictionary.stepper.step2.id, name: dictionary.stepper.step2.name, fields: ['currentAddress', 'previousAddress', 'landlordName', 'landlordPhone', 'reasonForLeaving'] },
+      { id: dictionary.stepper.step3.id, name: dictionary.stepper.step3.name, fields: ['employmentStatus', 'employer', 'jobTitle', 'monthlyIncome'] },
+      { id: dictionary.stepper.step4.id, name: dictionary.stepper.step4.name, fields: ['workLetter', 'bankStatements', 'identityCard', 'datacredito'] },
+    ], [dictionary]);
 
-    const companySteps = [
-        { id: dictionary.stepper.step1_company.id, name: dictionary.stepper.step1_company.name },
-        { id: dictionary.stepper.step2_company.id, name: dictionary.stepper.step4.name },
-    ];
-    
-    return clientType === 'individual' ? individualSteps : companySteps;
+  const companySteps = useMemo(() => [
+      { id: dictionary.stepper.step1_company.id, name: dictionary.stepper.step1_company.name, fields: ['companyName', 'companyRNC', 'companyAddress', 'companyActivity', 'companyPhoneOffice', 'companyPhoneCell', 'signerName', 'signerRole', 'signerId'] },
+      { id: dictionary.stepper.step2_company.id, name: dictionary.stepper.step4.name, fields: ['mercantileRegistry', 'representativeId', 'assemblyAct', 'bankStatements', 'datacredito'] },
+    ], [dictionary]);
 
-  }, [dictionary, clientType]);
-
-  const activeSteps = steps;
+  const steps = clientType === 'individual' ? individualSteps : companySteps;
 
   const dynamicSchema = useMemo(() => {
     return formRole === 'tenant' ? generateTenantSchema(dictionary, clientType, numberOfTenants) : generateApplicationSchema(dictionary, clientType)
   }, [dictionary, clientType, numberOfTenants, formRole]);
 
   const form = useForm({
-    // resolver: zodResolver(dynamicSchema),
+    resolver: zodResolver(dynamicSchema),
     defaultValues: applicationData,
     mode: "onBlur"
   });
 
+  const { control, trigger, getValues } = form;
   const { fields } = useFieldArray({
-    control: form.control,
+    control,
     name: "tenants"
   });
   
-  const handleNext = () => {
-    setCurrentStep(step => step + 1);
+  const handleNext = async () => {
+    let isValid = true;
+    const currentFields = steps[currentStep].fields;
+
+    if (formRole === 'tenant') {
+        for (let i = 0; i < fields.length; i++) {
+            const fieldsToValidate = currentFields.map(field => `tenants.${i}.${field}`) as FieldPath<any>[];
+            const result = await trigger(fieldsToValidate);
+            if (!result) isValid = false;
+        }
+    } else {
+        const fieldsToValidate = currentFields.map(field => field) as FieldPath<any>[];
+        isValid = await trigger(fieldsToValidate);
+    }
+
+    if (isValid) {
+        setCurrentStep(step => step + 1);
+    }
   };
 
-  const handleFinalStep = () => {
-    const data = form.getValues();
-    onFormSubmit(data);
+  const handleFinalStep = async () => {
+    const isValid = await trigger();
+    if (isValid) {
+        const data = getValues();
+        onFormSubmit(data);
+    }
   }
   
   const renderTenantForms = (StepComponent: React.ElementType, props: any = {}) => {
@@ -142,9 +157,9 @@ export function MultiStepForm({ clientType, onFormSubmit, formRole, title, appli
         <div className="text-center mb-4">
           <h2 className="text-xl font-semibold">{title}</h2>
         </div>
-        <FormStepper steps={activeSteps} currentStep={currentStep} />
+        <FormStepper steps={steps} currentStep={currentStep} />
       </CardHeader>
-      <form>
+      <form onSubmit={(e) => e.preventDefault()}>
         <CardContent className="min-h-[450px] py-8">
             {renderStep()}
         </CardContent>
@@ -157,7 +172,7 @@ export function MultiStepForm({ clientType, onFormSubmit, formRole, title, appli
             )}
           </div>
           <div>
-            {currentStep < activeSteps.length -1 ? (
+            {currentStep < steps.length -1 ? (
               <Button type="button" onClick={handleNext} className="bg-primary hover:bg-primary/90">
                 {dictionary.buttons.nextStep}
               </Button>

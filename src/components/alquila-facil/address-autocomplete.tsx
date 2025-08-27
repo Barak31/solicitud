@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, useRef } from "react";
@@ -85,7 +86,6 @@ export function AddressAutocomplete({
         }}
         placeholder={placeholder || dictionary.rentalHistory.addressPlaceholder}
         autoComplete="off"
-        suppressHydrationWarning
       />
       {isOpen && suggestions.length > 0 && (
         <div className="absolute z-10 w-full mt-1">
@@ -109,3 +109,5 @@ export function AddressAutocomplete({
     </div>
   );
 }
+
+    

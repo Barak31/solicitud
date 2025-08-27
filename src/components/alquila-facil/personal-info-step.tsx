@@ -36,7 +36,7 @@ export function PersonalInfoStep({ form, fieldPrefix }: Props) {
               <FormItem>
                 <FormLabel>{t.fullName}</FormLabel>
                 <FormControl>
-                  <Input placeholder="John Doe" {...field} suppressHydrationWarning />
+                  <Input placeholder="John Doe" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -49,7 +49,7 @@ export function PersonalInfoStep({ form, fieldPrefix }: Props) {
               <FormItem>
                 <FormLabel>{t.email}</FormLabel>
                 <FormControl>
-                  <Input type="email" placeholder="john.doe@example.com" {...field} suppressHydrationWarning />
+                  <Input type="email" placeholder="john.doe@example.com" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -62,7 +62,7 @@ export function PersonalInfoStep({ form, fieldPrefix }: Props) {
               <FormItem>
                 <FormLabel>{t.phone}</FormLabel>
                 <FormControl>
-                  <Input type="tel" placeholder="(123) 456-7890" {...field} suppressHydrationWarning />
+                  <Input type="tel" placeholder="(123) 456-7890" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -115,3 +115,5 @@ export function PersonalInfoStep({ form, fieldPrefix }: Props) {
     </Form>
   );
 }
+
+    

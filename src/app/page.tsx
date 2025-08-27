@@ -48,12 +48,12 @@ export default function Home() {
   const handleTenantCountSelect = (count: 1 | 2) => {
     setNumberOfTenants(count);
     const initialTenants = Array.from({ length: count }, () => ({
-        clientType: 'individual',
+        clientType: 'individual' as const,
         fullName: '', email: '', phone: '', dob: undefined,
         currentAddress: '', previousAddress: '', landlordName: '', landlordPhone: '', reasonForLeaving: '',
         employmentStatus: undefined, employer: '', jobTitle: '', monthlyIncome: 0,
         workLetter: null, bankStatements: null, identityCard: null, datacredito: null,
-      } as ApplicationData));
+      }));
     setApplication(prev => ({ ...prev, tenants: initialTenants }));
     setStage('TENANT_FORM');
   };
@@ -273,6 +273,8 @@ export default function Home() {
     </div>
   );
 }
+
+    
 
     
 
