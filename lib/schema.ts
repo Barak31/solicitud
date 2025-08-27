@@ -63,16 +63,13 @@ const companySchemaBase = (t: (typeof translations)['es']) => z.object({
 });
 
 export const generateApplicationSchema = (t: (typeof translations)['es'], clientType: ClientType) => {
-    if (clientType === 'individual') {
-        return individualSchemaBase(t);
-    }
-    return companySchemaBase(t);
+    return clientType === 'individual' ? individualSchemaBase(t) : companySchemaBase(t);
 };
 
 export const generateTenantSchema = (t: (typeof translations)['es'], clientType: ClientType, numberOfTenants: number) => {
-    const baseSchema = clientType === 'individual' ? individualSchemaBase(t) : companySchemaBase(t);
+    const baseSchema = generateApplicationSchema(t, clientType);
     return z.object({
-        tenants: z.array(baseSchema).length(numberOfTenants)
+        tenants: z.array(baseSchema).length(numberOfTenants, { message: `Deben haber exactamente ${numberOfTenants} inquilinos.`})
     });
 }
 

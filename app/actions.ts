@@ -16,33 +16,32 @@ export async function submitApplication(values: FullApplication) {
       return { error: "Incomplete application data." };
   }
 
-  // Validate Tenants
+  // Validate each tenant individually
   for (const tenant of values.tenants) {
     const tenantSchema = generateApplicationSchema(t, tenant.clientType);
     const validatedTenant = tenantSchema.safeParse(tenant);
     if (!validatedTenant.success) {
-      console.error("Tenant validation failed:", validatedTenant.error.issues);
+      console.error("Tenant validation failed:", validatedTenant.error.format());
       return { error: "Invalid tenant fields!", issues: validatedTenant.error.issues };
     }
   }
 
-  // Validate Guarantor
+  // Validate the guarantor
   const guarantorSchema = generateApplicationSchema(t, values.guarantor.clientType);
   const validatedGuarantor = guarantorSchema.safeParse(values.guarantor);
   if (!validatedGuarantor.success) {
-    console.error("Guarantor validation failed:", validatedGuarantor.error.issues);
+    console.error("Guarantor validation failed:", validatedGuarantor.error.format());
     return { error: "Invalid guarantor fields!", issues: validatedGuarantor.error.issues };
   }
   
-  const validatedTenants = values.tenants.map(tenant => {
-      const tenantSchema = generateApplicationSchema(t, tenant.clientType);
-      return tenantSchema.parse(tenant);
-  });
-
+  // If all validations pass, you can proceed with the parsed data
   const data = {
       agent: values.agent,
-      tenants: validatedTenants,
-      guarantor: validatedGuarantor.data
+      tenants: values.tenants.map(tenant => {
+          const tenantSchema = generateApplicationSchema(t, tenant.clientType);
+          return tenantSchema.parse(tenant);
+      }),
+      guarantor: guarantorSchema.parse(values.guarantor)
   };
 
   // Backend Integration Point:
