@@ -23,10 +23,11 @@ const individualSchemaBase = (t: (typeof translations)['es']) => z.object({
     }),
     // Rental History
     currentAddress: z.string().min(1, { message: t.validation.currentAddress.min }),
-    previousAddress: z.string().min(1, { message: t.validation.previousAddress.min }),
-    landlordName: z.string().min(1, { message: t.validation.landlordName.min }),
-    landlordPhone: z.string().min(1, { message: t.validation.landlordPhone.min }),
-    reasonForLeaving: z.string().min(1, { message: t.validation.reasonForLeaving.min }),
+    housingType: z.enum(['rented', 'own'], { required_error: t.validation.housingType.required }),
+    previousAddress: z.string().optional(),
+    landlordName: z.string().optional(),
+    landlordPhone: z.string().optional(),
+    reasonForLeaving: z.string().optional(),
     // Employment Information
     employmentStatus: z.enum(["employed", "unemployed", "student"], {
         required_error: t.validation.employmentStatus.required,
@@ -39,6 +40,21 @@ const individualSchemaBase = (t: (typeof translations)['es']) => z.object({
     bankStatements: fileSchema(t),
     identityCard: fileSchema(t),
     datacredito: fileSchema(t),
+}).superRefine((data, ctx) => {
+    if (data.housingType === 'rented') {
+        if (!data.previousAddress) {
+            ctx.addIssue({ code: z.ZodIssueCode.custom, message: t.validation.previousAddress.min, path: ['previousAddress'] });
+        }
+        if (!data.landlordName) {
+            ctx.addIssue({ code: z.ZodIssueCode.custom, message: t.validation.landlordName.min, path: ['landlordName'] });
+        }
+        if (!data.landlordPhone) {
+            ctx.addIssue({ code: z.ZodIssueCode.custom, message: t.validation.landlordPhone.min, path: ['landlordPhone'] });
+        }
+        if (!data.reasonForLeaving) {
+            ctx.addIssue({ code: z.ZodIssueCode.custom, message: t.validation.reasonForLeaving.min, path: ['reasonForLeaving'] });
+        }
+    }
 });
 
 const companySchemaBase = (t: (typeof translations)['es']) => z.object({
@@ -83,5 +99,3 @@ export interface FullApplication {
     tenants: ApplicationData[];
     guarantor: ApplicationData | null;
 }
-
-    

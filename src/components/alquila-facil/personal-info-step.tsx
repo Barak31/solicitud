@@ -23,6 +23,7 @@ export function PersonalInfoStep({ form, fieldPrefix }: Props) {
   const { language, dictionary } = useLanguage();
   const t = dictionary.personalInfo;
   const locale = language === 'es' ? es : enUS;
+  const currentYear = new Date().getFullYear();
 
   return (
     <Form {...form}>
@@ -96,17 +97,15 @@ export function PersonalInfoStep({ form, fieldPrefix }: Props) {
                   <PopoverContent className="w-auto p-0" align="start">
                     <Calendar
                       mode="single"
+                      captionLayout="dropdown-buttons"
+                      fromYear={1950}
+                      toYear={currentYear}
                       selected={field.value}
                       onSelect={field.onChange}
                       disabled={(date) =>
                         date > new Date() || date < new Date("1900-01-01")
                       }
                       initialFocus
-			// --- ¡CAMBIOS AQUÍ! ---
-                  captionLayout="dropdown-buttons" // <-- Activa los selectores de mes y año
-                  fromYear={1940}                   // <-- Define el año de inicio para el selector
-                  toYear={new Date().getFullYear()} // <-- Define el año de fin (el actual)
-                  // --- FIN DE LOS CAMBIOS ---
                       locale={locale}
                     />
                   </PopoverContent>
@@ -120,5 +119,3 @@ export function PersonalInfoStep({ form, fieldPrefix }: Props) {
     </Form>
   );
 }
-
-    

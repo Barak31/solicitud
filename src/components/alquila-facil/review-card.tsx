@@ -48,12 +48,19 @@ export function ReviewCard({ data }: Props) {
             
                 <SectionTitle title={t_rental.title} />
                 <ReviewItem label={t_rental.currentAddress} value={data.currentAddress} />
-                <ReviewItem label={t_rental.previousAddress} value={data.previousAddress} />
-                <ReviewItem label={t_rental.landlordName} value={data.landlordName} />
-                <ReviewItem label={t_rental.landlordPhone} value={data.landlordPhone} />
-                <div className="md:col-span-3">
-                    <ReviewItem label={t_rental.reasonForLeaving} value={data.reasonForLeaving} />
-                </div>
+                <ReviewItem label={t_rental.housingSituation} value={data.housingType === 'rented' ? t_rental.rented : t_rental.own} />
+                
+                {data.housingType === 'rented' && (
+                  <>
+                    <ReviewItem label={t_rental.previousAddress} value={data.previousAddress} />
+                    <ReviewItem label={t_rental.landlordName} value={data.landlordName} />
+                    <ReviewItem label={t_rental.landlordPhone} value={data.landlordPhone} />
+                    <div className="md:col-span-3">
+                        <ReviewItem label={t_rental.reasonForLeaving} value={data.reasonForLeaving} />
+                    </div>
+                  </>
+                )}
+
 
                 <SectionTitle title={t_employment.title} />
                 <ReviewItem label={t_employment.employmentStatus} value={data.employmentStatus ? dictionary.employmentInfo[data.employmentStatus as keyof typeof dictionary.employmentInfo] : ''} />
