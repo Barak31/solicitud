@@ -50,7 +50,7 @@ export default function Home() {
     const initialTenants = Array.from({ length: count }, () => ({
         clientType: 'individual' as const,
         fullName: '', email: '', phone: '', dob: undefined,
-        currentAddress: '', previousAddress: '', landlordName: '', landlordPhone: '', reasonForLeaving: '',
+        currentAddress: '', housingType: undefined, previousAddress: '', landlordName: '', landlordPhone: '', reasonForLeaving: '',
         employmentStatus: undefined, employer: '', jobTitle: '', monthlyIncome: 0,
         workLetter: null, bankStatements: null, identityCard: null, datacredito: null,
       }));
@@ -76,7 +76,7 @@ export default function Home() {
   
   const handleGuarantorTypeSelect = (type: ClientType) => {
     const guarantorData: ApplicationData = type === 'individual' ? 
-      { clientType: 'individual', fullName: '', email: '', phone: '', dob: undefined, currentAddress: '', previousAddress: '', landlordName: '', landlordPhone: '', reasonForLeaving: '', employmentStatus: undefined, employer: '', jobTitle: '', monthlyIncome: 0, workLetter: null, bankStatements: null, identityCard: null, datacredito: null } :
+      { clientType: 'individual', fullName: '', email: '', phone: '', dob: undefined, currentAddress: '', housingType: undefined, previousAddress: '', landlordName: '', landlordPhone: '', reasonForLeaving: '', employmentStatus: undefined, employer: '', jobTitle: '', monthlyIncome: 0, workLetter: null, bankStatements: null, identityCard: null, datacredito: null } :
       { clientType: 'company', companyName: '', companyRNC: '', companyAddress: '', companyActivity: '', companyPhoneOffice: '', companyPhoneCell: '', signerName: '', signerRole: '', signerId: '', mercantileRegistry: null, representativeId: null, assemblyAct: null, bankStatements: null, datacredito: null };
     
     setApplication(prev => ({ ...prev, guarantor: guarantorData }));
@@ -273,9 +273,5 @@ export default function Home() {
     </div>
   );
 }
-
-    
-
-    
 
     

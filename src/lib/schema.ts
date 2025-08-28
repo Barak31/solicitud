@@ -42,16 +42,16 @@ const individualSchemaBase = (t: (typeof translations)['es']) => z.object({
     datacredito: fileSchema(t),
 }).superRefine((data, ctx) => {
     if (data.housingType === 'rented') {
-        if (!data.previousAddress) {
+        if (!data.previousAddress || data.previousAddress.trim() === "") {
             ctx.addIssue({ code: z.ZodIssueCode.custom, message: t.validation.previousAddress.min, path: ['previousAddress'] });
         }
-        if (!data.landlordName) {
+        if (!data.landlordName || data.landlordName.trim() === "") {
             ctx.addIssue({ code: z.ZodIssueCode.custom, message: t.validation.landlordName.min, path: ['landlordName'] });
         }
-        if (!data.landlordPhone) {
+        if (!data.landlordPhone || data.landlordPhone.trim() === "") {
             ctx.addIssue({ code: z.ZodIssueCode.custom, message: t.validation.landlordPhone.min, path: ['landlordPhone'] });
         }
-        if (!data.reasonForLeaving) {
+        if (!data.reasonForLeaving || data.reasonForLeaving.trim() === "") {
             ctx.addIssue({ code: z.ZodIssueCode.custom, message: t.validation.reasonForLeaving.min, path: ['reasonForLeaving'] });
         }
     }
@@ -99,3 +99,5 @@ export interface FullApplication {
     tenants: ApplicationData[];
     guarantor: ApplicationData | null;
 }
+
+    
